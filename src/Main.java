@@ -8,25 +8,42 @@ public class Main {
     public static void main(String args[]) {
         try {
             ServerSocket serverSocket = new ServerSocket(3000);
-            System.out.println("Aguardando cliente");
             while (true) {
-                Socket socket = serverSocket.accept();
-                System.out.println("cliente entrou");
-
-                Scanner scanner = new Scanner(socket.getInputStream());
-
-                while (scanner.hasNextLine()) {
-                    String msg = scanner.nextLine();
-                    Keyboard keyboard = new Keyboard();
-                    keyboard.type(msg, true);
-                    System.out.println(msg);
-                }
+                Socket client = serverSocket.accept();
+                clientMessage(client);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private static void clientMessage(Socket client){
+        try (Scanner scanner = new Scanner(client.getInputStream())) {
+            while (scanner.hasNextLine())
+                writeMessage(scanner.nextLine(), Keyboard.KEY_ENTER);
+            closeConection(client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void closeConection(Socket client) {
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static void writeMessage(String message, int key){
+        try {
+            Keyboard keyboard = new Keyboard();
+            keyboard.type(message, key);
         } catch (AWTException e) {
             e.printStackTrace();
         }
+
     }
 }

@@ -6,6 +6,10 @@ public class Keyboard {
 
     private Robot robot;
 
+    public static final int KEY_ENTER = VK_ENTER;
+    public static final int KEY_TAB = VK_TAB;
+    public static  final int KEY_NONE = 0;
+
     public Keyboard() throws AWTException {
         this.robot = new Robot();
     }
@@ -14,23 +18,23 @@ public class Keyboard {
         this.robot = robot;
     }
 
-    private void pressEnter() {
-        robot.keyPress(VK_ENTER);
-        robot.keyRelease(VK_ENTER);
+    private void pressEnter(int key) {
+        robot.keyPress(key);
+        robot.keyRelease(key);
     }
 
-    public void type(CharSequence characters, boolean pressEnter) {
+    public void type(CharSequence characters, int keyFinalPress) {
         int length = characters.length();
         for (int i = 0; i < length; i++) {
             char character = characters.charAt(i);
             type(character);
         }
-        if (pressEnter) {
-            pressEnter();
+        if (KEY_NONE != keyFinalPress) {
+            pressEnter(keyFinalPress);
         }
     }
 
-    public void type(char character) {
+    private void type(char character) {
         switch (character) {
             case 'a':
                 doType(VK_A);
